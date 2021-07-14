@@ -66,7 +66,7 @@ def main():
     glPushMatrix()
     glScale(3,3,1)
     glTranslatef(8,3,0)
-    visualization.draw(aro)
+    visualization.draw(aro) 
     glPopMatrix()
    
     rotacao += 5
