@@ -5,10 +5,13 @@ from pygame.locals import *
 from OpenGL.GLU import *
 from OpenGL.GL import *
 import pygame
+import math
+import numpy as np
 from PIL import Image
 id_textures = []
 rotacao=1
 y=2.2
+x=-10
 def iluminacao():
     glLightfv(GL_LIGHT0, GL_AMBIENT, (0.1, 0.1, 0.1, 1.0))
     glMaterialfv(GL_FRONT, GL_SPECULAR, (1.0, 1.0, 1.0, 1.0))
@@ -36,13 +39,36 @@ def carregar_imagem(filename):
     image = Image.open(filename)
     id_texture = criar_texturas(image.size[0], image.size[1], image.convert("RGBA").tobytes("raw", "RGBA"))
     id_textures.append (id_texture)
-    
+
+
+def point(x,y):
+  
+  glClear(GL_COLOR_BUFFER_BIT)
+
+  glColor3f(0.0,1.0,0.0)
+
+  glPointSize(5.0)
+
+  glBegin(GL_Points)        # GL_POINTS -> GL_LINES
+
+ 
+
+  glVertex2f(x, y)         # Added another Vertex specifying end coordinates of line
+
+  glEnd()
+
+  glFlush()
+
+
+
 def main():
-  global rotacao, y
+  global rotacao, y, x
+  flag=True
+
   pygame.init() 
   display = (1280, 720) 
   pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
-
+  
   gluPerspective(45, (display[0]/display[1]), 0.1, 100) 
   
   glEnable(GL_TEXTURE_2D)
@@ -65,17 +91,30 @@ def main():
               
     glPushMatrix()
     glScale(3,3,1)
-    glTranslatef(8,3,0)
+    glTranslatef(8,-1,0)
     visualization.draw(aro) 
     glPopMatrix()
    
     rotacao += 5
-    y-=0.01
+
     glPushMatrix()
     glScale(2,2,1)
+    
     #Para a bola acertar a cesta, ela deve eestar nas cordenadas
-    #glTranslatef(10.3,2,0)
-    glTranslatef(-10,0,0)
+    #O ponto máximo da parabola glTranslatef(0.8,10.3,0)
+    #Acerta a cesta em: glTranslatef(10.3,7,0)
+    if True:
+      
+      y=((-0.1*x*x)+10.2)
+      x+=0.05
+
+      glTranslatef(x,y,0)
+
+    # else:
+    #   print("caindo: "+str(y))
+    #   glTranslatef(x,y,0)
+    #   y-=0.007
+    #   x+=0.005
    
     glRotatef(rotacao,10,8,10)
     visualization.draw(basquetebola)
