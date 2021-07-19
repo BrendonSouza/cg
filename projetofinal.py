@@ -9,16 +9,17 @@ import math
 import numpy as np
 from PIL import Image
 
-
 rotacao=1
 y=-1
 x=0
+basquetebola = Wavefront('./objetos/bola.obj')
+aro = Wavefront('./objetos/quadra2.obj')
+
 def iluminacao():
-    glLightfv(GL_LIGHT0, GL_AMBIENT, (0.1, 0.1, 0.1, 1.0))
+    glLightfv(GL_LIGHT0, GL_POSITION, (0.1, 0.1, 0.1, 1.0))
     glMaterialfv(GL_FRONT, GL_SPECULAR, (1.0, 1.0, 1.0, 1.0))
     glMaterialfv(GL_FRONT, GL_DIFFUSE, (0.0, 0.0, 1.0, 1.0))
     glMaterialfv(GL_FRONT, GL_SHININESS, (50))
-    glLightfv(GL_LIGHT0, GL_POSITION,(0, 0, -30, 1))
     glShadeModel(GL_SMOOTH)
     glMatrixMode(GL_MODELVIEW)
 
@@ -76,7 +77,7 @@ def main():
     # verifico se há colisão com o ferro da tabela
     if(not fakecolision(x,y)):
       y=(-0.045*(x*x)+(1.8*x))
-      x+=0.2
+      x+=0.1
       glTranslatef(x,y,-2)
       glRotatef(rotacao,10,8,10)
     else:
@@ -90,9 +91,6 @@ def main():
 
     visualization.draw(basquetebola)
     glPopMatrix()
-    
-
-
 
     pygame.display.flip()
     pygame.time.wait(10)
@@ -100,7 +98,6 @@ def main():
     
 
    
-basquetebola = Wavefront('./objetos/bola.obj')
-aro = Wavefront('./objetos/quadra2.obj')
+
 
 main()
