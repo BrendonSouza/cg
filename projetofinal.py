@@ -8,7 +8,8 @@ import pygame
 import math
 import numpy as np
 from PIL import Image
-id_textures = []
+
+
 rotacao=1
 y=-1
 x=0
@@ -21,56 +22,28 @@ def iluminacao():
     glShadeModel(GL_SMOOTH)
     glMatrixMode(GL_MODELVIEW)
 
-def criar_texturas(width, height, pbits):
-    id_texture = glGenTextures(1)
-    glBindTexture(GL_TEXTURE_2D, id_texture)
+def groundColision(y):
+  if(y<=-11.3):
+    return True
+  else:
+    return False
 
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pbits)
-    
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+def fakecolision(x,y):
+  coordxmax=37.5
+  coordymin=-1.5
 
-    return id_texture
-
-def carregar_imagem(filename):
-    global id_textures
-    image = Image.open(filename)
-    id_texture = criar_texturas(image.size[0], image.size[1], image.convert("RGBA").tobytes("raw", "RGBA"))
-    id_textures.append (id_texture)
-
-
-def point(x,y):
-  
-  glClear(GL_COLOR_BUFFER_BIT)
-
-  glColor3f(0.0,1.0,0.0)
-
-  glPointSize(5.0)
-
-  glBegin(GL_Points)        # GL_POINTS -> GL_LINES
-
- 
-
-  glVertex2f(x, y)         # Added another Vertex specifying end coordinates of line
-
-  glEnd()
-
-  glFlush()
-
+  if(x<coordxmax and y>coordymin):
+    return False
+  else:
+    return True
 
 
 def main():
   global rotacao, y, x
-  flag=True
-
   pygame.init() 
   display = (1280, 720) 
   pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
-  
   gluPerspective(45, (display[0]/display[1]), 0.1, 100) 
-  
   glEnable(GL_TEXTURE_2D)
   glEnable(GL_LIGHT0)
   glEnable(GL_LIGHTING)
@@ -78,10 +51,7 @@ def main():
   glEnable(GL_DEPTH_TEST)
   glTranslatef(0, 0, -55)
   glRotatef(0,1,1,0)
-   
- 
   iluminacao()
-  
   while True:
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -95,22 +65,29 @@ def main():
     glRotatef(90,0,1,0)
     visualization.draw(aro) 
     glPopMatrix()
-   
+
+    #defino a rotacao incremental, fora da matriz
     rotacao += 5
 
+    #Configurações da Bola
     glPushMatrix()
-    glScale(1,1,1)
+    glScale(0.9,0.9,1)
     
-    #Para a bola acertar a cesta, ela deve eestar nas cordenadas
-    #O ponto máximo da parabola glTranslatef(0.8,10.3,0)
-    #Acerta a cesta em: glTranslatef(10.3,7,0)
+    # verifico se há colisão com o ferro da tabela
+    if(not fakecolision(x,y)):
+      y=(-0.045*(x*x)+(1.8*x))
+      x+=0.2
+      glTranslatef(x,y,-2)
+      glRotatef(rotacao,10,8,10)
+    else:
+      # Verifica colisao com o chao
+      if(not groundColision(y)):
+        y-=0.2
+        glTranslatef(x,y,-2)
+        glRotatef(rotacao,10,8,10)
+      else:
+        glTranslatef(x,-11.3,-2)
 
-      
-    y=((-x*x)+6*x)
-    x+=0.05
-
-    glTranslatef(x,y,0)
-    glRotatef(rotacao,10,8,10)
     visualization.draw(basquetebola)
     glPopMatrix()
     
