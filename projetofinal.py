@@ -10,8 +10,8 @@ import numpy as np
 from PIL import Image
 id_textures = []
 rotacao=1
-y=2.2
-x=-10
+y=-1
+x=0
 def iluminacao():
     glLightfv(GL_LIGHT0, GL_AMBIENT, (0.1, 0.1, 0.1, 1.0))
     glMaterialfv(GL_FRONT, GL_SPECULAR, (1.0, 1.0, 1.0, 1.0))
@@ -90,35 +90,28 @@ def main():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) 
               
     glPushMatrix()
-    glScale(3,3,1)
-    glTranslatef(8,-1,0)
+    glScale(5,5,5)
+    glTranslatef(0,-2,0)
+    glRotatef(90,0,1,0)
     visualization.draw(aro) 
     glPopMatrix()
    
     rotacao += 5
 
     glPushMatrix()
-    glScale(2,2,1)
+    glScale(1,1,1)
     
     #Para a bola acertar a cesta, ela deve eestar nas cordenadas
     #O ponto máximo da parabola glTranslatef(0.8,10.3,0)
     #Acerta a cesta em: glTranslatef(10.3,7,0)
-    if True:
+
       
-      y=((-0.1*x*x)+10.2)
-      x+=0.05
+    y=((-x*x)+6*x)
+    x+=0.05
 
-      glTranslatef(x,y,0)
-
-    # else:
-    #   print("caindo: "+str(y))
-    #   glTranslatef(x,y,0)
-    #   y-=0.007
-    #   x+=0.005
-   
+    glTranslatef(x,y,0)
     glRotatef(rotacao,10,8,10)
     visualization.draw(basquetebola)
-    
     glPopMatrix()
     
 
@@ -131,6 +124,6 @@ def main():
 
    
 basquetebola = Wavefront('./objetos/bola.obj')
-aro = Wavefront('./objetos/tabelinha.obj')
+aro = Wavefront('./objetos/quadra2.obj')
 
 main()
