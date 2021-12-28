@@ -83,7 +83,7 @@ def main():
     else:
       # Verifica colisao com o chao
       if(not groundColision(y)):
-        y-=0.2
+        y-=0.1
         glTranslatef(x,y,-2)
         glRotatef(rotacao,10,8,10)
       else:
